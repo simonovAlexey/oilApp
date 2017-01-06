@@ -8,10 +8,20 @@ import java.util.Locale;
 public class Oil {
     private double viscosity;
     private int volume;
+    private double densityAt20;
 
     public Oil(double viscosity, int volume) {
+        this(viscosity,volume,1.0);
+    }
+
+    public Oil(double viscosity, int volume, double densityAt20) {
         this.viscosity = viscosity;
         this.volume = volume;
+        this.densityAt20 = densityAt20;
+    }
+
+    public double getDensityAt20() {
+        return densityAt20;
     }
 
     public int getVolume() {

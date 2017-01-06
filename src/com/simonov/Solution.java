@@ -8,7 +8,7 @@ import com.simonov.model.Oil;
 public class Solution {
     public static void main(String[] args) {
         MixingUtil mixingUtil = new MixingUtil();
-        Oil oilA = new Oil(320f,100);
+        Oil oilA = new Oil(320f,36);
         Oil oilB = new Oil(680f,150);
         Oil oilC = new Oil(320f,1000);
 //        System.out.println(oilA);

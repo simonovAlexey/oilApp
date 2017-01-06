@@ -6,8 +6,11 @@ import static java.lang.Math.log10;
 
 /**
  * Created by Алексей on 05.01.2017.
- *   x log log(µ +0.6) + y log log(µ'+0.6) = z log log(µ''+0.6)
- *   x + y = z
+ * ASTM D7152 − 11
+ * Standard Practice for
+ * Calculating Viscosity of a Blend of Petroleum Products
+ * x log log(µ +0.7) + y log log(µ'+0.7) = z log log(µ''+0.7)
+ * x + y = z
  */
 public class MixingUtil {
 
@@ -32,9 +35,8 @@ public class MixingUtil {
 
 
     public double getVolumeByNeededOil(Oil oilA, double oilBViscosity, double neededViscosity) {
-        double oilAViscosity = oilA.getViscosity();
-        int oilAVolume = oilA.getVolume();
 
+        double oilAViscosity = oilA.getViscosity();
         double minV, maxV;
         if (oilAViscosity > oilBViscosity) {
             maxV = oilAViscosity;
@@ -51,7 +53,7 @@ public class MixingUtil {
         double k2 = logLog(oilBViscosity);
         double k3 = logLog(neededViscosity);
 
-        return (k1 - k3) * oilAVolume / (k3 - k2);
+        return (k1 - k3) * oilA.getVolume() / (k3 - k2);
 
     }
 
@@ -83,10 +85,10 @@ public class MixingUtil {
     }
 
     private double powPow(double s1) {
-        return Math.pow(10, Math.pow(10, s1)) - 0.6;
+        return Math.pow(10, Math.pow(10, s1)) - 0.7;
     }
 
     private double logLog(double oilAViscosity) {
-        return log10(log10(oilAViscosity + 0.6));
+        return log10(log10(oilAViscosity + 0.7));
     }
 }
