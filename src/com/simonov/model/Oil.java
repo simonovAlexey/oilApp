@@ -9,6 +9,7 @@ public class Oil {
     private double viscosity;
     private int volume;
     private double densityAt20;
+    int viscIndex;
 
     public Oil(double viscosity, int volume) {
         this(viscosity,volume,1.0);
@@ -18,6 +19,14 @@ public class Oil {
         this.viscosity = viscosity;
         this.volume = volume;
         this.densityAt20 = densityAt20;
+    }
+
+    public int getViscIndex() {
+        return viscIndex;
+    }
+
+    public void setViscIndex(int viscIndex) {
+        this.viscIndex = viscIndex;
     }
 
     public double getDensityAt20() {

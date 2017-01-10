@@ -1,6 +1,5 @@
 package com.simonov;
 
-import com.simonov.model.Oil;
 import javafx.util.Pair;
 
 import java.io.File;
@@ -51,21 +50,20 @@ public class DensityUtil {
         throw new IllegalArgumentException("wrong density of petroleum products");
     }
 
-    public double getDensity(Oil oil, int temperature) {
-        double tempCorrectionKoff = getTempCorrectionKoff(oil.getDensityAt20());
+    public double getDensity(double densityAt20, int temperature) {
+        double tempCorrectionKoff = getTempCorrectionKoff(densityAt20);
         if (temperature > 20) {
-            return oil.getDensityAt20() - (temperature - 20) * tempCorrectionKoff;
-        } else return oil.getDensityAt20() + (20 - temperature) * tempCorrectionKoff;
+            return densityAt20 - (temperature - 20) * tempCorrectionKoff;
+        } else return densityAt20 + (20 - temperature) * tempCorrectionKoff;
 
     }
 
 
     public static void main(String[] args) {
         DensityUtil densityUtil = new DensityUtil();
-        Oil oil = new Oil(20, 100, 0.8240);
-        Oil oil2 = new Oil(20, 100, 0.7520);
-        System.out.println(densityUtil.getDensity(oil,23));
-        System.out.println(densityUtil.getDensity(oil2,-12));
+
+        System.out.println(densityUtil.getDensity(0.8240,23));
+        System.out.println(densityUtil.getDensity(0.7520,-12));
 
     }
 

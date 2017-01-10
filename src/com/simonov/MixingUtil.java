@@ -2,13 +2,14 @@ package com.simonov;
 
 import com.simonov.model.Oil;
 
-import static java.lang.Math.log10;
+import static com.simonov.MathUtil.*;
 
 /**
  * Created by Алексей on 05.01.2017.
  * ASTM D7152 − 11
  * Standard Practice for
  * Calculating Viscosity of a Blend of Petroleum Products
+ *
  * x log log(µ +0.7) + y log log(µ'+0.7) = z log log(µ''+0.7)
  * x + y = z
  */
@@ -60,18 +61,9 @@ public class MixingUtil {
 
     public double getViscosityByOils(double oilAViscosity, int oilAVolume, double oilBViscosity, double oilBVolume) {
 
-
-        // =10^(10^(((C8*a1)+(J8*b1))/(mixVolume)))-0,6
-        // =10^(10^(s1))-0,6
-        // =10^(c1)-0,6
-
-        // =10^(10^(((+C8*(LOG(LOG(+C9+0,6))))+(+J8*(LOG(LOG(+J9+0,6)))))/(+C8+J8)))-0,6
-
-        double mixVolume = oilAVolume + oilBVolume;
         double a1 = logLog(oilAViscosity);
         double b1 = logLog(oilBViscosity);
-        double s1 = (oilAVolume * a1 + oilBVolume * b1) / mixVolume;
-
+        double s1 = (oilAVolume * a1 + oilBVolume * b1) / (oilAVolume + oilBVolume);
         return powPow(s1);
     }
 
@@ -84,11 +76,4 @@ public class MixingUtil {
         return powPow(s1);
     }
 
-    private double powPow(double s1) {
-        return Math.pow(10, Math.pow(10, s1)) - 0.7;
-    }
-
-    private double logLog(double oilAViscosity) {
-        return log10(log10(oilAViscosity + 0.7));
-    }
 }
