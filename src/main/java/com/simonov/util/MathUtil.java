@@ -1,10 +1,8 @@
-package com.simonov;
+package com.simonov.util;
 
 import static java.lang.Math.log10;
 
-/**
- * Created by Алексей on 09.01.2017.
- */
+
 public class MathUtil {
 
     private MathUtil() {

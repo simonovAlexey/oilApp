@@ -1,17 +1,27 @@
-package com.simonov;
+package com.simonov.service;
+
+import org.springframework.stereotype.Component;
+
+import static com.simonov.util.MathUtil.logLog;
+import static com.simonov.util.MathUtil.powPow;
 
 /**
  * Created by Алексей on 06.01.2017.
  * VI - ГОСТ 25371 (ISO 2909)
+ *
+ * VI > 0 && VI < 5 при этом highVisco = 0.7897* (lowVisco / sqrt(lowVisco))+ 0.005*lowVisco
  */
-public class ViscosityUtil {
+
+@Component
+public class ViscosityService {
+
     public double getViscoAtTemp(double highTemp, double highVisco, double lowTemp, double lowVisco, double temperature) {
         double kVisco = Math.log10(Math.log10(highVisco + 0.7) / Math.log10(lowVisco + 0.7));
         double kTemp = Math.log10(((lowTemp + 273.15) / (highTemp + 273.15)));
         double k5 = kVisco / kTemp;
-        double k4 = MathUtil.logLog(lowVisco) + k5 * Math.log10(lowTemp + 273.15);
+        double k4 = logLog(lowVisco) + k5 * Math.log10(lowTemp + 273.15);
         double k = k4 - k5 * Math.log10(temperature + 273.15);
-        return MathUtil.powPow(k);
+        return powPow(k);
     }
 
     public double getVindex(double highTemp, double highVisco, double lowTemp, double lowVisco) {
@@ -20,7 +30,7 @@ public class ViscosityUtil {
         double v100 = (highTemp == 100) ? highVisco : getViscoAtTemp(highTemp, highVisco, lowTemp,
                 lowVisco, 100);
         if (v100 < 2)
-            throw new IllegalArgumentException("viscosity at 100C must be >2.0 sSt, current :" + Math.round(v100 * 100) / 100);
+            throw new IllegalArgumentException("viscosityAt40 at 100C must be >2.0 sSt, current :" + Math.round(v100 * 100) / 100);
 
         double vIlow = getVIlow(v100);
         double vIhigh = getVIhigh(v100);
@@ -28,7 +38,7 @@ public class ViscosityUtil {
         double v1 = ((vIlow - v40) / (vIlow - vIhigh)) * 100;
         double v2 = (Math.pow(10, n) - 1) / 0.00715 + 100;
 
-        return v40>=vIhigh ? v1:v2;
+        return v40 >= vIhigh ? v1 : v2;
     }
 
     private double getVIlow(double v100) {
@@ -64,6 +74,7 @@ public class ViscosityUtil {
         if (v100 >= 7 && v100 < 7.7) vIhigh = 0.79762 * v100 * v100 - 0.7321 * v100 + 14.61;
         if (v100 >= 7.7 && v100 < 9) vIhigh = 0.05794 * v100 * v100 + 10.5156 * v100 - 28.24;
         if (v100 >= 9 && v100 < 12) vIhigh = 0.26665 * v100 * v100 + 6.7015 * v100 - 10.81;
+        if (v100 >= 12 && v100 < 15) vIhigh = 0.20073 * v100 * v100 + 8.4658 * v100 - 22.49;
         if (v100 >= 15 && v100 < 18) vIhigh = 0.28889 * v100 * v100 + 5.9741 * v100 - 4.93;
         if (v100 >= 18 && v100 < 22) vIhigh = 0.24504 * v100 * v100 + 7.416 * v100 - 16.73;
         if (v100 >= 22 && v100 < 28) vIhigh = 0.20323 * v100 * v100 + 9.1267 * v100 - 34.23;
@@ -75,9 +86,9 @@ public class ViscosityUtil {
     }
 
     public static void main(String[] args) {
-       /* System.out.println(new ViscosityUtil().getViscoAtTemp(100, 4, 40, 20, 0));
-        System.out.println(new ViscosityUtil().getViscoAtTemp(100, 4, 40, 20, 50));
-        System.out.println(new ViscosityUtil().getViscoAtTemp(100, 4, 40, 20, 40));*/
-        System.out.println(new ViscosityUtil().getVindex(100, 6, 40, 40));
+       /* System.out.println(new ViscosityService().getViscoAtTemp(100, 4, 40, 20, 0));
+        System.out.println(new ViscosityService().getViscoAtTemp(100, 4, 40, 20, 50));
+        System.out.println(new ViscosityService().getViscoAtTemp(100, 4, 40, 20, 40));*/
+        System.out.println(new ViscosityService().getVindex(100, 6, 40, 40));
     }
 }

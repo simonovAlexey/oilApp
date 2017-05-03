@@ -1,6 +1,8 @@
-package com.simonov;
+package com.simonov.service;
 
 import javafx.util.Pair;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +21,9 @@ import java.util.stream.Collectors;
  *Petroleum and petroleum products. Methods for determination of density
  *
  */
-public class DensityUtil {
+@Component
+@Slf4j
+public class DensityService {
 
     private static final Map<Pair<Double, Double>, Double> INIT_DENSITY = getInitMap();
 
@@ -28,16 +32,19 @@ public class DensityUtil {
         String basePath = new File("").getAbsolutePath();
         List<String[]> collect = null;
         try {
-            collect = Files.lines(Paths.get(basePath, "\\src\\resources\\densitymap.ini"), StandardCharsets.UTF_8).
+            collect = Files.lines(Paths.get(basePath, "\\src\\main\\resources\\densitymap.ini"), StandardCharsets.UTF_8).
                     map((p -> (Arrays.stream(p.split("=")).toArray(String[]::new)))).collect(Collectors.toList());
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Exception reading densitymap.ini: {}",e.getMessage());
         }
-        System.out.println();
         for (String[] strings : collect) {
             String[] splDens = strings[0].split("-");
-            map.put(new Pair<>(Double.valueOf(splDens[0]), Double.valueOf(splDens[1])), Double.valueOf(strings[1]));
+            try {
+                map.put(new Pair<>(Double.valueOf(splDens[0]), Double.valueOf(splDens[1])), Double.valueOf(strings[1]));
+            } catch (NumberFormatException e) {
+                log.error("Error parsing densitymap.ini: {}",e.getMessage());
+            }
         }
         return map;
 
@@ -60,10 +67,10 @@ public class DensityUtil {
 
 
     public static void main(String[] args) {
-        DensityUtil densityUtil = new DensityUtil();
+        DensityService densityService = new DensityService();
 
-        System.out.println(densityUtil.getDensity(0.8240,23));
-        System.out.println(densityUtil.getDensity(0.7520,-12));
+        System.out.println(densityService.getDensity(0.8240,23));
+        System.out.println(densityService.getDensity(0.7520,-12));
 
     }
 
